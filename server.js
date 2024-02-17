@@ -2,15 +2,7 @@ const express = require('express');
 const routes = require('./routes');
 // import sequelize connection
 const { Sequelize, DataTypes } = require("sequelize");
-const sequelize = new Sequelize(
-  'umbrella',
-  '',
-  '',
-  {
-    host: 'localhost',
-    dialect: 'mysql'
-  }
-);
+const sequelize = require('./config/connection');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
@@ -26,7 +18,7 @@ sequelize.authenticate().then(() => {
   console.error('Unable to connect to the database: ', error);
 });
 
-const products = sequelize.define("Products", {
+const products = sequelize.define("Product", {
   id: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -65,16 +57,6 @@ sequelize.sync().then(() => {
   });
 }).catch((error) => {
   console.error('Unable to create table : ', error);
-});
-
-sequelize.sync().then(() => {
-    products.findAll().then(res => {
-        console.log(res)
-    }).catch((error) => {
-        console.error('Failed to retrieve data : ', error);
-    });
-}).catch((error) => {
-    console.error('Unable to create table : ', error);
 });
 
 app.listen(PORT, () => {

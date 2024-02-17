@@ -2,16 +2,9 @@ const router = require('express').Router();
 const { Product, Category, Tag, ProductTag } = require('../../models');
 // import sequelize connection
 const { Sequelize, DataTypes } = require("sequelize");
-const sequelize = new Sequelize(
-  'umbrella',
-  'root',
-  'Images',
-  {
-    host: 'localhost',
-    dialect: 'mysql'
-  }
-);
-const products = sequelize.define("Products", {
+const sequelize = require('../../config/connection');
+
+const products = sequelize.define("Product", {
   id: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -42,21 +35,34 @@ const products = sequelize.define("Products", {
 router.get('/', (req, res) => {
   // find all products
   // be sure to include its associated Category and Tag data
-sequelize.sync().then(() => {
-  products.findAll().then(res => {
-      console.log(res)
-  }).catch((error) => {
+  sequelize.sync().then(() => {
+    products.findAll().then(result => {
+      res.send(JSON.stringify(result))
+    }).catch((error) => {
       console.error('Failed to retrieve data : ', error);
+    });
+  }).catch((error) => {
+    console.error('Unable to create table : ', error);
   });
-}).catch((error) => {
-  console.error('Unable to create table : ', error);
-});
 });
 
 // get one product
 router.get('/:id', (req, res) => {
   // find a single product by its `id`
-  // be sure to include its associated Category and Tag data
+  // be sure to include its associated Category and Tag datasequelize.sync().then(() => {
+  sequelize.sync().then(() => {
+    products.findOne({
+      where: {
+        id: req.params.id
+      }
+    }).then(result => {
+      res.send(JSON.stringify(result))
+    }).catch((error) => {
+      console.error('Failed to retrieve data : ', error);
+    });
+  }).catch((error) => {
+    console.error('Unable to create table : ', error);
+  });
 });
 
 // create new product
