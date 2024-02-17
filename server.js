@@ -4,8 +4,8 @@ const routes = require('./routes');
 const { Sequelize, DataTypes } = require("sequelize");
 const sequelize = new Sequelize(
   'umbrella',
-  'root',
-  'Images',
+  '',
+  '',
   {
     host: 'localhost',
     dialect: 'mysql'
